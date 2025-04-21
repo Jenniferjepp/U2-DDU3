@@ -20,16 +20,101 @@ const cities = [
 ];
 
 
-function handler (request) {
+async function handler (request) {
 
-// hantering av CORS
-const headersCORS = new Headers();  // skapar ett nytt Header-objekt som jag döper till headersCORS (eftersom att den ska hantera CORS-förfrågningar)
-headersCORS.set("Access-Control-Allow-Origin", "*");  // set lägget till headers i objektet. Dessa 2 tillsammans säger ge access till ALLA origins!
+  const url = new URL(request.url);
+  const citiesToJSON = JSON.stringify(cities);  // formaterar arrayen cities till JSON-sträng
 
-if (request.method === "OPTIONS") {  // Webbläsaren skickar ibland en "preflight request" innan den gör en riktig begäran. Det är en OPTIONS-förfrågan som frågar: “Får jag lov att skicka den här typen av förfrågan?” -- 
-  return new Response(null, {headers: headersCORS});  // Om servern får en OPTIONS-förfrågan, svarar den bara direkt med ett tomt svar (null) och skickar med CORS-headrarna. Det betyder: “Ja, det är okej att du skickar din riktiga förfrågan sen!”
+  // ENDPOINT --> /CITIES
+  if (url.pathname === "/cities") {
+    
+    // GET
+    if (request.method === "GET") {
+      return new Response(citiesToJSON, 
+        {status: 200,
+        headers: {"Content-Type": "application/json"}
+      });  // skickar arrayen som JSON-sträng, med status 200 och content-typ JSON som respons.
+    }
+
+    // POST
+    if (request.method === "POST") {
+      const contentType = request.headers.get("content-type");
+
+      if (contentType === "application/json") {
+        const requestCity = await request.json();  // denna packar upp requesten från webbläsaren ocg gör den till JAVASCRIPT!!
+        console.log("requested city:", requestCity);
+
+        // name/ country saknas som attribut:
+        if (!requestCity.name || !requestCity.country) {
+          console.log("name or country is missing!");
+          return new Response("Missing name or country", {status: 400});
+        }
+
+
+        // leta upp namnet på staden i arrayen:
+        const cityAlreadyExists = cities.find(city => city.name === requestCity.name);
+
+        // staden finns redan i listan:
+        if (cityAlreadyExists) {
+          console.log("city already exists");
+          return new Response("City already exists", {status: 409});
+
+        // staden finns INTE i listan och ska läggas till i arrayen:
+        } else {
+          const maxId = Math.max(...cities.map(city => city.id));  
+          const newId = maxId + 1;
+          const requestCityWithId = {id: newId, name: requestCity.name, country: requestCity.country};
+          cities.push(requestCityWithId);
+
+          return new Response(JSON.stringify(requestCityWithId), {
+            status: 200,
+            headers: {"Content-Type": "application/json"} 
+          });
+        }
+      }
+    }
+
+    // DELETE
+    if (request.method === "DELETE") {
+      const contentType = request.headers.get("content-type");
+
+      if (contentType === "application/json") {
+        const requestId = await request.json();  // denna packar upp requesten från webbläsaren ocg gör den till JAVASCRIPT!! 
+
+        //  om attributet id saknas: 
+        if (!requestId.id) {
+          return new Response("Id is missing!", {status: 400});
+        }
+
+
+        // letar upp indexet i arrayen:
+        const indexToDelete = cities.findIndex(city => city.id === requestId.id);
+
+        // om indexet existerar i cities:
+        if (indexToDelete !== -1) {  // findIndex returnerar -1 om det inte finns ngn matchning, så vi kollar om det faktiskt finns en matchning.
+          cities.splice(indexToDelete, 1);
+          return new Response("Delete OK!", {status: 200})
+
+        // om indexet inte finns i cities:
+        } else {
+          return new Response("Id does not exist", {status: 404});
+        }
+      }
+    }
+  }
+
+  // hantering av CORS
+  const headersCORS = new Headers();  // skapar ett nytt Header-objekt som jag döper till headersCORS (eftersom att den ska hantera CORS-förfrågningar)
+  headersCORS.set("Access-Control-Allow-Origin", "*");  // set lägget till headers i objektet. Dessa 2 tillsammans säger ge access till ALLA origins!
+
+  if (request.method === "OPTIONS") {  // Webbläsaren skickar ibland en "preflight request" innan den gör en riktig begäran. Det är en OPTIONS-förfrågan som frågar: “Får jag lov att skicka den här typen av förfrågan?” -- 
+    return new Response(null, {headers: headersCORS});  // Om servern får en OPTIONS-förfrågan, svarar den bara direkt med ett tomt svar (null) och skickar med CORS-headrarna. Det betyder: “Ja, det är okej att du skickar din riktiga förfrågan sen!”
+  }
+
+
+  // Om ingen endpoint matchar
+  return new Response("Not found", { status: 404 });
+
 }
 
-// 3 endpoints 
-
-}
+Deno.serve(handler);
