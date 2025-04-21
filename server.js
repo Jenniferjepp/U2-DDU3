@@ -22,6 +22,16 @@ const cities = [
 
 async function handler (request) {
 
+  // hantering av CORS
+  const headersCORS = new Headers();  // skapar ett nytt Header-objekt som jag döper till headersCORS (eftersom att den ska hantera CORS-förfrågningar)
+  headersCORS.set("Access-Control-Allow-Origin", "*");  // set lägget till headers i objektet. Dessa 2 tillsammans säger ge access till ALLA origins!
+
+  if (request.method === "OPTIONS") {  // Webbläsaren skickar ibland en "preflight request" innan den gör en riktig begäran. Det är en OPTIONS-förfrågan som frågar: “Får jag lov att skicka den här typen av förfrågan?” -- 
+    return new Response(null, {headers: headersCORS});  // Om servern får en OPTIONS-förfrågan, svarar den bara direkt med ett tomt svar (null) och skickar med CORS-headrarna. Det betyder: “Ja, det är okej att du skickar din riktiga förfrågan sen!”
+  }
+
+
+  
   const url = new URL(request.url);
   const citiesToJSON = JSON.stringify(cities);  // formaterar arrayen cities till JSON-sträng
 
@@ -106,8 +116,12 @@ async function handler (request) {
 
   //  ENDPOINT --> /CITIES/:ID
   const pathParts = url.pathname.split("/");  // delar upp pathname i en array baserat på "/" - alltså blir varje part av url:ens pathname egenskaper i en array.
-  if (pathParts.length === 3 && pathParts[1] === "cities") {   // om arrayen av alla parts är 3 och första parten är cities ==>
-    const idFromURL = Number(pathParts[2]);  // Hämta id från URL:en och gör till en siffra
+  if (pathParts.length === 3 && 
+      pathParts[1] === "cities" && 
+      !isNaN(Number(pathParts[2])) 
+    ){   // om arrayen av alla parts är 3 OCH första parten är cities OCH andra parten är en siffra (annars hoppar vi alltid in här om vi har en andra part vilket blir problem för search)==>
+    
+      const idFromURL = Number(pathParts[2]);  // Hämta id från URL:en och gör till en siffra
 
     if (request.method === "GET") {
       const foundCity = cities.find(city => city.id === idFromURL);
@@ -123,12 +137,42 @@ async function handler (request) {
     }
   }
 
-  // hantering av CORS
-  const headersCORS = new Headers();  // skapar ett nytt Header-objekt som jag döper till headersCORS (eftersom att den ska hantera CORS-förfrågningar)
-  headersCORS.set("Access-Control-Allow-Origin", "*");  // set lägget till headers i objektet. Dessa 2 tillsammans säger ge access till ALLA origins!
 
-  if (request.method === "OPTIONS") {  // Webbläsaren skickar ibland en "preflight request" innan den gör en riktig begäran. Det är en OPTIONS-förfrågan som frågar: “Får jag lov att skicka den här typen av förfrågan?” -- 
-    return new Response(null, {headers: headersCORS});  // Om servern får en OPTIONS-förfrågan, svarar den bara direkt med ett tomt svar (null) och skickar med CORS-headrarna. Det betyder: “Ja, det är okej att du skickar din riktiga förfrågan sen!”
+  //  ENDPOINT --> /CITIES/SEARCH?TEXT=X&COUNTRY=Y
+  if (url.pathname === "/cities/search") {
+    if (request.method === "GET") {
+      const text = url.searchParams.get("text");  // hämtar värdet på sökparametern TEXT
+      const country = url.searchParams.get("country");  // hämtar värdet på sökparametern COUNTRY
+
+      // om sökparameten text INTE är inkluderad:
+      if (!text) {  // get("text") returnerar null om den inte finns – och !null blir true, så det är ett smidigt sätt att göra det på.  !! Detta är den enda platsen du behöver kontrollera att text finns – för eftersom du använder return så avbryts funktionen där om det saknas.
+        return new Response("SearchParam TEXT needs to be included", {status: 400});
+      } 
+
+
+      let filteredCities = [];
+
+      // filtrera på både text OCH country:
+      if(country) {
+        filteredCities = cities.filter(city => 
+          city.name.toLowerCase().includes(text.toLowerCase()) && 
+          city.country.toLowerCase() === country.toLowerCase()
+        );
+
+      // filterar bara på text:
+      } else {
+        filteredCities = cities.filter(city => 
+          city.name.toLowerCase().includes(text.toLowerCase())
+        );
+      }
+      
+      // lyckad respons om text finns inkluderad
+      return new Response(JSON.stringify(filteredCities), {
+        status: 200, 
+        headers: {"Content-Type": "application/json"}
+      });
+
+    }
   }
 
 
