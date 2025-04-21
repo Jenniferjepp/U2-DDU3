@@ -103,6 +103,26 @@ async function handler (request) {
     }
   }
 
+
+  //  ENDPOINT --> /CITIES/:ID
+  const pathParts = url.pathname.split("/");  // delar upp pathname i en array baserat på "/" - alltså blir varje part av url:ens pathname egenskaper i en array.
+  if (pathParts.length === 3 && pathParts[1] === "cities") {   // om arrayen av alla parts är 3 och första parten är cities ==>
+    const idFromURL = Number(pathParts[2]);  // Hämta id från URL:en och gör till en siffra
+
+    if (request.method === "GET") {
+      const foundCity = cities.find(city => city.id === idFromURL);
+
+      if (foundCity) {
+        return new Response(JSON.stringify(foundCity), {
+          status: 200,
+          headers: {"Content-Type": "application/json"}
+        });
+      } else {
+        return new Response("City with this Id does not exist :(", {status: 404});
+      }
+    }
+  }
+
   // hantering av CORS
   const headersCORS = new Headers();  // skapar ett nytt Header-objekt som jag döper till headersCORS (eftersom att den ska hantera CORS-förfrågningar)
   headersCORS.set("Access-Control-Allow-Origin", "*");  // set lägget till headers i objektet. Dessa 2 tillsammans säger ge access till ALLA origins!
