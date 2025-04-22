@@ -30,6 +30,8 @@ async function handler (request) {
   const headersCORS = new Headers();  // skapar ett nytt Header-objekt som jag döper till headersCORS (eftersom att den ska hantera CORS-förfrågningar)
   headersCORS.set("Access-Control-Allow-Origin", "*");  // set lägget till headers i objektet. Dessa 2 tillsammans säger ge access till ALLA origins!
   headersCORS.set("Content-Type", "application/json");
+  headersCORS.set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+  headersCORS.set("Access-Control-Allow-Headers", "Content-Type");
 
   if (request.method === "OPTIONS") {  // Webbläsaren skickar ibland en "preflight request" innan den gör en riktig begäran. Det är en OPTIONS-förfrågan som frågar: “Får jag lov att skicka den här typen av förfrågan?” -- 
     return new Response(null, {headers: headersCORS});  // Om servern får en OPTIONS-förfrågan, svarar den bara direkt med ett tomt svar (null) och skickar med CORS-headrarna. Det betyder: “Ja, det är okej att du skickar din riktiga förfrågan sen!”
@@ -47,7 +49,7 @@ async function handler (request) {
   // ENDPOINT --> /CITIES
   if (url.pathname === "/cities") {
     
-    // GET
+    // GET    ----- (R1)
     if (request.method === "GET") {
       return new Response(citiesToJSON, 
         {status: 200,
@@ -55,7 +57,7 @@ async function handler (request) {
       });  // skickar arrayen som JSON-sträng, med status 200 och content-typ JSON som respons.
     }
 
-    // POST
+    // POST    ----- (R2)
     if (request.method === "POST") {
       const contentType = request.headers.get("content-type");
 
