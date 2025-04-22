@@ -46,10 +46,11 @@ async function handler (request) {
   }
 
 
+
   // ENDPOINT --> /CITIES
   if (url.pathname === "/cities") {
     
-    // GET    ----- (R1)
+    // GET    ----- (R1, R4)
     if (request.method === "GET") {
       return new Response(citiesToJSON, 
         {status: 200,
@@ -95,7 +96,7 @@ async function handler (request) {
       }
     }
 
-    // DELETE
+    // DELETE   ----- (R3)
     if (request.method === "DELETE") {
       const contentType = request.headers.get("content-type");
 
@@ -114,7 +115,10 @@ async function handler (request) {
         // om indexet existerar i cities:
         if (indexToDelete !== -1) {  // findIndex returnerar -1 om det inte finns ngn matchning, så vi kollar om det faktiskt finns en matchning.
           cities.splice(indexToDelete, 1);
-          return new Response("Delete OK!", {status: 200})
+          return new Response("Delete OK!", {
+            status: 200,
+            headers: headersCORS
+          });
 
         // om indexet inte finns i cities:
         } else {
@@ -134,6 +138,7 @@ async function handler (request) {
     
       const idFromURL = Number(pathParts[2]);  // Hämta id från URL:en och gör till en siffra
 
+    // GET   ----- (R5)
     if (request.method === "GET") {
       const foundCity = cities.find(city => city.id === idFromURL);
 
@@ -151,6 +156,8 @@ async function handler (request) {
 
   //  ENDPOINT --> /CITIES/SEARCH?TEXT=X&COUNTRY=Y
   if (url.pathname === "/cities/search") {
+
+    // GET  ----- (R6, R7)
     if (request.method === "GET") {
       const text = url.searchParams.get("text");  // hämtar värdet på sökparametern TEXT
       const country = url.searchParams.get("country");  // hämtar värdet på sökparametern COUNTRY
