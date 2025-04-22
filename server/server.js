@@ -69,7 +69,10 @@ async function handler (request) {
         // name/ country saknas som attribut:
         if (!requestCity.name || !requestCity.country) {
           console.log("name or country is missing!");
-          return new Response("Missing name or country", {status: 400});
+          return new Response("Missing name or country", {
+            status: 400,
+            headers: headersCORS
+          });
         }
 
 
@@ -79,7 +82,10 @@ async function handler (request) {
         // staden finns redan i listan:
         if (cityAlreadyExists) {
           console.log("city already exists");
-          return new Response("City already exists", {status: 409});
+          return new Response("City already exists", {
+            status: 409,
+            headers: headersCORS
+        });
 
         // staden finns INTE i listan och ska läggas till i arrayen:
         } else {
@@ -105,7 +111,9 @@ async function handler (request) {
 
         //  om attributet id saknas: 
         if (!requestId.id) {
-          return new Response("Id is missing!", {status: 400});
+          return new Response("Id is missing!", {
+            status: 400,
+            headers: headersCORS});
         }
 
 
@@ -122,7 +130,9 @@ async function handler (request) {
 
         // om indexet inte finns i cities:
         } else {
-          return new Response("Id does not exist", {status: 404});
+          return new Response("Id does not exist", {
+            status: 404,
+            headers: headersCORS});
         }
       }
     }
@@ -195,7 +205,9 @@ async function handler (request) {
 
 
   // Om ingen endpoint matchar
-  return new Response("Not found", { status: 404 });
+  return new Response("No matched endpoint", { 
+    status: 400,
+    headers: headersCORS });
 
 }
 
