@@ -22,18 +22,27 @@ const cities = [
 
 async function handler (request) {
 
+  const url = new URL(request.url);
+  const citiesToJSON = JSON.stringify(cities);  // formaterar arrayen cities till JSON-sträng
+
+
   // hantering av CORS
   const headersCORS = new Headers();  // skapar ett nytt Header-objekt som jag döper till headersCORS (eftersom att den ska hantera CORS-förfrågningar)
   headersCORS.set("Access-Control-Allow-Origin", "*");  // set lägget till headers i objektet. Dessa 2 tillsammans säger ge access till ALLA origins!
+  headersCORS.set("Content-Type", "application/json");
 
   if (request.method === "OPTIONS") {  // Webbläsaren skickar ibland en "preflight request" innan den gör en riktig begäran. Det är en OPTIONS-förfrågan som frågar: “Får jag lov att skicka den här typen av förfrågan?” -- 
     return new Response(null, {headers: headersCORS});  // Om servern får en OPTIONS-förfrågan, svarar den bara direkt med ett tomt svar (null) och skickar med CORS-headrarna. Det betyder: “Ja, det är okej att du skickar din riktiga förfrågan sen!”
   }
 
-
   
-  const url = new URL(request.url);
-  const citiesToJSON = JSON.stringify(cities);  // formaterar arrayen cities till JSON-sträng
+
+
+// HANTERAR FAVICON FEL... behövs??
+  if (url.pathname === "/favicon.ico") {
+    return new Response(null, { status: 204 });  // 204 betyder "No Content"
+  }
+
 
   // ENDPOINT --> /CITIES
   if (url.pathname === "/cities") {
@@ -42,7 +51,7 @@ async function handler (request) {
     if (request.method === "GET") {
       return new Response(citiesToJSON, 
         {status: 200,
-        headers: {"Content-Type": "application/json"}
+        headers: headersCORS
       });  // skickar arrayen som JSON-sträng, med status 200 och content-typ JSON som respons.
     }
 
@@ -78,7 +87,7 @@ async function handler (request) {
 
           return new Response(JSON.stringify(requestCityWithId), {
             status: 200,
-            headers: {"Content-Type": "application/json"} 
+            headers: headersCORS 
           });
         }
       }
@@ -129,7 +138,7 @@ async function handler (request) {
       if (foundCity) {
         return new Response(JSON.stringify(foundCity), {
           status: 200,
-          headers: {"Content-Type": "application/json"}
+          headers: headersCORS
         });
       } else {
         return new Response("City with this Id does not exist :(", {status: 404});
@@ -169,7 +178,7 @@ async function handler (request) {
       // lyckad respons om text finns inkluderad
       return new Response(JSON.stringify(filteredCities), {
         status: 200, 
-        headers: {"Content-Type": "application/json"}
+        headers: headersCORS
       });
 
     }
@@ -182,3 +191,8 @@ async function handler (request) {
 }
 
 Deno.serve(handler);
+
+
+// FRÅGOR:
+// Borde jag hantera favicon??
+// I /cities/search?text=X&country=Y står det att servern ska svara med en array, ska det inte vara i form av JSON?
