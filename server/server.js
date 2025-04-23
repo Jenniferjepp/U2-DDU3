@@ -77,7 +77,7 @@ async function handler (request) {
 
 
         // leta upp namnet på staden i arrayen:
-        const cityAlreadyExists = cities.find(city => city.name === requestCity.name);
+        const cityAlreadyExists = cities.find(city => city.name.toLowerCase() === requestCity.name.toLowerCase());
 
         // staden finns redan i listan:
         if (cityAlreadyExists) {
