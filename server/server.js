@@ -174,7 +174,9 @@ async function handler (request) {
 
       // om sökparameten text INTE är inkluderad:
       if (!text) {  // get("text") returnerar null om den inte finns – och !null blir true, så det är ett smidigt sätt att göra det på.  !! Detta är den enda platsen du behöver kontrollera att text finns – för eftersom du använder return så avbryts funktionen där om det saknas.
-        return new Response("SearchParam TEXT needs to be included", {status: 400});
+        return new Response("SearchParam TEXT needs to be included", {
+          status: 400,
+          headers: headersCORS});
       } 
 
 

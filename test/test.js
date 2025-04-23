@@ -20,7 +20,7 @@ R1();
 // Request 2:
 async function R2 () {
 
-    options = {
+    const options = {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
@@ -41,7 +41,7 @@ async function R2 () {
 
 // Request 3:
 async function R3 () {
-    options = {
+    const options = {
         method: "DELETE", 
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
@@ -253,65 +253,37 @@ function handleResponse12 (response12) {
 
 
 
-/*
-options3 = {
-    method: "DELETE", 
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-        id: 2
-    })
-}
-const request3 = new Request("http://0.0.0.0:8000/cities", options3);
+// 13) En GET-förfrågan till endpoint /cities/search
 
-const promiseResponse3 = fetch(request3);
-promiseResponse3.then(handleResponse3);
+// Request 13:
+const request13 = new Request("http://0.0.0.0:8000/cities/search");
 
-function handleResponse3 (response3) {
-    const promiseResource3 = response3.text();
-    promiseResource3.then(handleResource3);
+const responsePromise13 = fetch(request13);
+responsePromise13.then(handleResponse13);
+
+function handleResponse13 (response13) {
+    console.log("Request 13:", response13.status);
 }
 
-function handleResource3 (resource3) {
-    console.log("Request 3:", resource3);
-}
-*/
 
 
+// 14) En DELETE-förfrågan till endpoint /mordor
+// Förväntat response-status: 400 (no matched endpoint)
 
-/*
-const request4 = new Request("http://0.0.0.0:8000/cities");
-
-const responsePromise4 = fetch(request4);
-responsePromise4.then(handleResponse4);
-
-function handleResponse4 (response4) {
-    const promiseResource4 = response4.text();
-    promiseResource4.then(handleResource4);
+// Request 14:
+const options14 = {
+    method: "DELETE",
+    headers: {"Content-Type": "application/json"}
 }
 
-function handleResource4 (resource4) {
-    console.log("Request4:", resource4)
-}
-*/
+const request14 = new Request("http://0.0.0.0:8000/cities/mordor", options14);
 
+const responsePromise14 = fetch(request14);
+responsePromise14.then(handleResponse14);
 
-
-/*
-const request5 = new Request("http://0.0.0.0:8000/cities/43");
-
-const responsePromise5 = fetch(request5);
-responsePromise5.then(handleResponse5);
-
-function handleResponse5 (response5) {
-    const resourcePromise5 = response5.json();
-    resourcePromise5.then(handleResource5);
+function handleResponse14 (response14) {
+    console.log("Request 14:", response14.status);
 }
 
-function handleResource5 (resource5) {
-    console.log("Request 5:", resource5);
-}
-*/
 
 
-// FRÅGOR: 
-// varför ska jag köra test.js som om det vore en server??
