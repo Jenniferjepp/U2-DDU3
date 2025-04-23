@@ -58,7 +58,7 @@ async function handler (request) {
       });  // skickar arrayen som JSON-sträng, med status 200 och content-typ JSON som respons.
     }
 
-    // POST    ----- (R2)
+    // POST    ----- (R2, R8, R9)
     if (request.method === "POST") {
       const contentType = request.headers.get("content-type");
 
@@ -102,7 +102,7 @@ async function handler (request) {
       }
     }
 
-    // DELETE   ----- (R3)
+    // DELETE   ----- (R3, R10, R11)
     if (request.method === "DELETE") {
       const contentType = request.headers.get("content-type");
 
@@ -167,7 +167,7 @@ async function handler (request) {
   //  ENDPOINT --> /CITIES/SEARCH?TEXT=X&COUNTRY=Y
   if (url.pathname === "/cities/search") {
 
-    // GET  ----- (R6, R7)
+    // GET  ----- (R6, R7, R13)
     if (request.method === "GET") {
       const text = url.searchParams.get("text");  // hämtar värdet på sökparametern TEXT
       const country = url.searchParams.get("country");  // hämtar värdet på sökparametern COUNTRY
@@ -206,7 +206,7 @@ async function handler (request) {
   }
 
 
-  // Om ingen endpoint matchar
+  // Om ingen endpoint matchar   ----- (R12, R14)
   return new Response("No matched endpoint", { 
     status: 400,
     headers: headersCORS });
