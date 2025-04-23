@@ -47,8 +47,14 @@ async function postMalmo () {
 
     const request = new Request("http://0.0.0.0:8000/cities", options);
 
-    const response = await fetch(request);
-    const resource = await response.json();
+    const response = await fetch(request);  
+    // "Vänta tills svaret kommer – och spara det i variabeln response." 
+    // utan async/ await behövs then() följt av en funktion som hanterar responsen, men med await kan responsen sparas direkt i variablen response.
+
+    const resource = await response.json();  // gör om till JS
+    // Servern skickade ett svar – men i JSON-format (typ som text med struktur).
+    // Vi använder await response.json() för att omvandla det till ett vanligt JavaScript-objekt som vi kan läsa.
+    //Resultatet sparas i resource.
 
     console.log("Request 2:", resource);
 }
