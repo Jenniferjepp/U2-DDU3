@@ -1,0 +1,83 @@
+@font-face {
+    font-family: "goth-bold";
+    src: url("../font/SpecialGothicExpandedOne-Regular.ttf");
+}
+
+@font-face {
+    font-family: "goth-thin";
+    src: url("../font/SpecialGothic-Regular.ttf");
+}
+
+
+
+body {
+    background-color: rgb(255, 255, 255);
+}
+
+#alfa-div {
+    margin: 20px 60px;
+    display: flex;
+    gap: 20px;
+}
+
+.div123 {
+    width: 100vw;
+    background-color: #C8DCBE;
+    display: flex;
+    flex-direction: column;
+}
+
+#div1 {
+    height: 400px;
+}
+
+h1 {
+    text-align: center;
+    color: #55903B;
+    font-family: goth-bold;
+}
+
+#cities-div {
+    flex-grow: 1;
+    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.city-div {
+    background-color: #7EAF67;
+   
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    margin: 0 10px;
+    
+    min-height: 60px;
+
+
+}
+
+.city-p {
+    margin: 20px;
+    font-weight: 100;
+    font-family: goth-thin;
+}
+
+.delete-b {
+    background-color: #c68080;
+    border-radius: 10px;
+    height: 25px;
+    margin-right: 10px;
+    border: 1px solid #913838;
+    font-family: goth-thin;
+}
+
+.delete-b:hover {
+    background-color: #d88a8a;
+}
+
+
+/* FÄRGER:
+/* #E4F4E1, #C8DCBE, #A5C695, #7EAF67, #55903B
