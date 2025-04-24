@@ -69,7 +69,7 @@ async function handler (request) {
         // name/ country saknas som attribut:
         if (!requestCity.name || !requestCity.country) {
           console.log("name or country is missing!");
-          return new Response("Missing name or country", {
+          return new Response(JSON.stringify("Missing name or country"), {
             status: 400,
             headers: headersCORS
           });
@@ -82,7 +82,7 @@ async function handler (request) {
         // staden finns redan i listan:
         if (cityAlreadyExists) {
           console.log("city already exists");
-          return new Response("City already exists", {
+          return new Response(JSON.stringify("City already exists"), {
             status: 409,
             headers: headersCORS
         });
@@ -158,7 +158,7 @@ async function handler (request) {
           headers: headersCORS
         });
       } else {
-        return new Response("City with this Id does not exist :(", {status: 404});
+        return new Response(JSON.stringify("City with this Id does not exist :("), {status: 404});
       }
     }
   }
@@ -174,7 +174,7 @@ async function handler (request) {
 
       // om sökparameten text INTE är inkluderad:
       if (!text) {  // get("text") returnerar null om den inte finns – och !null blir true, så det är ett smidigt sätt att göra det på.  !! Detta är den enda platsen du behöver kontrollera att text finns – för eftersom du använder return så avbryts funktionen där om det saknas.
-        return new Response("SearchParam TEXT needs to be included", {
+        return new Response(JSON.stringify("SearchParam TEXT needs to be included"), {
           status: 400,
           headers: headersCORS});
       } 
@@ -207,7 +207,7 @@ async function handler (request) {
 
 
   // Om ingen endpoint matchar   ----- (R12, R14)
-  return new Response("No matched endpoint", { 
+  return new Response(JSON.stringify("No matched endpoint"), { 
     status: 400,
     headers: headersCORS });
 
