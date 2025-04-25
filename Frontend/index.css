@@ -12,6 +12,9 @@
 
 body {
     background-color: rgb(255, 255, 255);
+    background-image: url(../vatten.jpeg);
+    background-position: center;
+    background-size: cover;
 }
 
 #alfa-div {
@@ -25,6 +28,9 @@ body {
     background-color: #C8DCBE;
     display: flex;
     flex-direction: column;
+
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
 }
 
 
@@ -44,21 +50,17 @@ h1 {
     overflow: scroll;
     display: flex;
     flex-direction: column;
-    
+    margin: 10px 0;
 }
 
 .city-div {
     background-color: #7EAF67;
-   
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-radius: 10px;
     margin: 10px 10px 0;
-    
     min-height: 60px;
-
-
 }
 
 .city-p {
@@ -85,7 +87,7 @@ h1 {
 
 /* DIV 2 */
 #div2 {
-    height: 250px;
+    height: 350px;
     align-items: center;
 }
 
@@ -96,17 +98,17 @@ h1 {
     flex-direction: column;
     align-items: center;
     width: 80%;
+    border: 1px solid #4e6f3f;
 }
 
 input {
-    border: none;              /* Tar bort alla kanter */
+    border: none; 
     border-bottom: 1px solid white; 
-    outline: none;             /* Tar bort blå glödeffekt vid klick */
+    outline: none; 
     padding: 5px;
     background-color: #7EAF67;
     color: white;
     font-size: 16px;
-
     margin: 10px;
     font-family: goth-thin;
 }
@@ -141,7 +143,7 @@ input:focus {
 /* DIV 3 */
 #div3 {
     align-items: center;
-    height: 500px;
+    height: 600px;
 }
 
 #search-country-input {
